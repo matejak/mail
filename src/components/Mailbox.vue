@@ -25,8 +25,7 @@
 	<Loading
 		v-else-if="loadingCacheInitialization"
 		:hint="t('mail', 'Loading messages')"
-		:slow-hint="t('mail', 'Indexing your messages. This can take a bit longer for larger mailboxes.')"
-	/>
+		:slow-hint="t('mail', 'Indexing your messages. This can take a bit longer for larger mailboxes.')" />
 	<EmptyMailbox v-else-if="envelopes.length === 0" key="empty" />
 	<EnvelopeList
 		v-else
@@ -35,22 +34,21 @@
 		:envelopes="envelopes"
 		:refreshing="refreshing"
 		:loading-more="loadingMore"
-		@delete="onDelete"
-	/>
+		@delete="onDelete" />
 </template>
 
 <script>
 import EmptyMailbox from './EmptyMailbox'
 import EnvelopeList from './EnvelopeList'
 import Error from './Error'
-import {findIndex, propEq} from 'ramda'
+import { findIndex, propEq } from 'ramda'
 import isMobile from '@nextcloud/vue/dist/Mixins/isMobile'
 import Loading from './Loading'
 import logger from '../logger'
 import MailboxLockedError from '../errors/MailboxLockedError'
 import MailboxNotCachedError from '../errors/MailboxNotCachedError'
-import {matchError} from '../errors/match'
-import {wait} from '../util/wait'
+import { matchError } from '../errors/match'
+import { wait } from '../util/wait'
 
 export default {
 	name: 'Mailbox',
@@ -149,13 +147,13 @@ export default {
 					query: this.searchQuery,
 				})
 
-				logger.debug('envelopes fetched', {envelopes})
+				logger.debug('envelopes fetched', { envelopes })
 
 				this.loadingEnvelopes = false
 
 				if (!this.isMobile && this.$route.name !== 'message' && envelopes.length > 0) {
 					// Show first message
-					let first = envelopes[0]
+					const first = envelopes[0]
 
 					// Keep the selected account-folder combination, but navigate to the message
 					// (it's not a bug that we don't use first.accountId and first.folderId here)
@@ -171,26 +169,26 @@ export default {
 				}
 			} catch (error) {
 				await matchError(error, {
-					[MailboxLockedError.getName()]: async (error) => {
-						logger.info('Mailbox is locked', {error})
+					[MailboxLockedError.getName()]: async(error) => {
+						logger.info('Mailbox is locked', { error })
 
 						await wait(15 * 1000)
 						// Keep trying
 						await this.loadEnvelopes()
 					},
-					[MailboxNotCachedError.getName()]: async (error) => {
-						logger.info('Mailbox not cached. Triggering initialization', {error})
+					[MailboxNotCachedError.getName()]: async(error) => {
+						logger.info('Mailbox not cached. Triggering initialization', { error })
 						this.loadingEnvelopes = false
 
 						try {
 							await this.initializeCache()
 						} catch (error) {
-							logger.error('Could not initialize cache', {error})
+							logger.error('Could not initialize cache', { error })
 							this.error = error
 						}
 					},
 					default: (error) => {
-						logger.error('Could not fetch envelopes', {error})
+						logger.error('Could not fetch envelopes', { error })
 						this.loadingEnvelopes = false
 						this.error = error
 					},
@@ -209,7 +207,7 @@ export default {
 					query: this.searchQuery,
 				})
 			} catch (error) {
-				logger.error('could not fetch next envelope page', {error})
+				logger.error('could not fetch next envelope page', { error })
 			} finally {
 				this.loadingMore = false
 			}
@@ -233,67 +231,67 @@ export default {
 			const idx = envelopes.indexOf(env)
 
 			switch (e.srcKey) {
-				case 'next':
-				case 'prev':
-					let next
-					if (e.srcKey === 'next') {
-						next = envelopes[idx + 1]
-					} else {
-						next = envelopes[idx - 1]
-					}
+			case 'next':
+			case 'prev':
+				let next
+				if (e.srcKey === 'next') {
+					next = envelopes[idx + 1]
+				} else {
+					next = envelopes[idx - 1]
+				}
 
-					if (!next) {
-						logger.debug('ignoring shortcut: head or tail of envelope list reached', {
-							envelopes,
-							idx,
-							srcKey: e.srcKey,
-						})
-						return
-					}
-
-					// Keep the selected account-folder combination, but navigate to a different message
-					// (it's not a bug that we don't use next.accountId and next.folderId here)
-					this.$router.push({
-						name: 'message',
-						params: {
-							accountId: this.$route.params.accountId,
-							folderId: this.$route.params.folderId,
-							filter: this.$route.params.filter ? this.$route.params.filter : undefined,
-							messageUid: next.uid,
-						},
+				if (!next) {
+					logger.debug('ignoring shortcut: head or tail of envelope list reached', {
+						envelopes,
+						idx,
+						srcKey: e.srcKey,
 					})
-					break
-				case 'del':
-					logger.debug('deleting', {env})
-					this.onDelete(env.uid)
-					this.$store
-						.dispatch('deleteMessage', {accountId: env.accountId, folderId: env.folderId, id: env.id})
-						.catch((error) => logger.error('could not delete envelope', {env, error}))
+					return
+				}
 
-					break
-				case 'flag':
-					logger.debug('flagging envelope via shortkey', {env})
-					this.$store
-						.dispatch('toggleEnvelopeFlagged', env)
-						.catch((error) => logger.error('could not flag envelope via shortkey', {env, error}))
-					break
-				case 'refresh':
-					logger.debug('syncing envelopes via shortkey')
-					if (!this.refreshing) {
-						this.sync()
-					}
+				// Keep the selected account-folder combination, but navigate to a different message
+				// (it's not a bug that we don't use next.accountId and next.folderId here)
+				this.$router.push({
+					name: 'message',
+					params: {
+						accountId: this.$route.params.accountId,
+						folderId: this.$route.params.folderId,
+						filter: this.$route.params.filter ? this.$route.params.filter : undefined,
+						messageUid: next.uid,
+					},
+				})
+				break
+			case 'del':
+				logger.debug('deleting', { env })
+				this.onDelete(env.uid)
+				this.$store
+					.dispatch('deleteMessage', { accountId: env.accountId, folderId: env.folderId, id: env.id })
+					.catch((error) => logger.error('could not delete envelope', { env, error }))
 
-					break
-				case 'unseen':
-					logger.debug('marking message as seen/unseen via shortkey', {env})
-					this.$store
-						.dispatch('toggleEnvelopeSeen', env)
-						.catch((error) =>
-							logger.error('could not mark envelope as seen/unseen via shortkey', {env, error})
-						)
-					break
-				default:
-					logger.warn('shortcut ' + e.srcKey + ' is unknown. ignoring.')
+				break
+			case 'flag':
+				logger.debug('flagging envelope via shortkey', { env })
+				this.$store
+					.dispatch('toggleEnvelopeFlagged', env)
+					.catch((error) => logger.error('could not flag envelope via shortkey', { env, error }))
+				break
+			case 'refresh':
+				logger.debug('syncing envelopes via shortkey')
+				if (!this.refreshing) {
+					this.sync()
+				}
+
+				break
+			case 'unseen':
+				logger.debug('marking message as seen/unseen via shortkey', { env })
+				this.$store
+					.dispatch('toggleEnvelopeSeen', env)
+					.catch((error) =>
+						logger.error('could not mark envelope as seen/unseen via shortkey', { env, error })
+					)
+				break
+			default:
+				logger.warn('shortcut ' + e.srcKey + ' is unknown. ignoring.')
 			}
 		},
 		async sync() {
@@ -308,10 +306,10 @@ export default {
 			} catch (error) {
 				matchError(error, {
 					[MailboxLockedError.getName()](error) {
-						logger.info('Background sync failed because the mailbox is locked', {error})
+						logger.info('Background sync failed because the mailbox is locked', { error })
 					},
 					default(error) {
-						logger.error('Could not sync envelopes: ' + error.message, {error})
+						logger.error('Could not sync envelopes: ' + error.message, { error })
 					},
 				})
 			} finally {

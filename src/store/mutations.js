@@ -23,11 +23,11 @@ import orderBy from 'lodash/fp/orderBy'
 import sortedUniq from 'lodash/fp/sortedUniq'
 import Vue from 'vue'
 
-import {buildMailboxHierarchy} from '../imap/MailboxHierarchy'
-import {havePrefix} from '../imap/MailboxPrefix'
-import {normalizedFolderId, normalizedMessageId, normalizedEnvelopeListId} from './normalization'
-import {sortMailboxes} from '../imap/MailboxSorter'
-import {UNIFIED_ACCOUNT_ID} from './constants'
+import { buildMailboxHierarchy } from '../imap/MailboxHierarchy'
+import { havePrefix } from '../imap/MailboxPrefix'
+import { normalizedFolderId, normalizedMessageId, normalizedEnvelopeListId } from './normalization'
+import { sortMailboxes } from '../imap/MailboxSorter'
+import { UNIFIED_ACCOUNT_ID } from './constants'
 
 const addFolderToState = (state, account) => (folder) => {
 	const id = normalizedFolderId(account.id, folder.id)
@@ -43,7 +43,7 @@ const sortAccounts = (accounts) => {
 }
 
 export default {
-	savePreference(state, {key, value}) {
+	savePreference(state, { key, value }) {
 		Vue.set(state.preferences, key, value)
 	},
 	addAccount(state, account) {
@@ -70,7 +70,7 @@ export default {
 	editAccount(state, account) {
 		Vue.set(state.accounts, account.id, Object.assign({}, state.accounts[account.id], account))
 	},
-	saveAccountsOrder(state, {account, order}) {
+	saveAccountsOrder(state, { account, order }) {
 		Vue.set(account, 'order', order)
 		Vue.set(
 			state,
@@ -81,7 +81,7 @@ export default {
 	toggleAccountCollapsed(state, accountId) {
 		state.accounts[accountId].collapsed = !state.accounts[accountId].collapsed
 	},
-	addFolder(state, {account, folder}) {
+	addFolder(state, { account, folder }) {
 		// Flatten the existing ones before updating the hierarchy
 		const existing = account.folders.map((id) => state.folders[id])
 		existing.forEach((folder) => {
@@ -104,7 +104,7 @@ export default {
 			account.folders.push(id)
 		})
 	},
-	addEnvelope(state, {accountId, folderId, query, envelope}) {
+	addEnvelope(state, { accountId, folderId, query, envelope }) {
 		const folder = state.folders[normalizedFolderId(accountId, folderId)]
 		Vue.set(state.envelopes, envelope.uid, envelope)
 		const listId = normalizedEnvelopeListId(query)
@@ -128,17 +128,17 @@ export default {
 				)
 			})
 	},
-	updateEnvelope(state, {envelope}) {
+	updateEnvelope(state, { envelope }) {
 		const existing = state.envelopes[envelope.uid]
 		if (!existing) {
 			return
 		}
 		Vue.set(existing, 'flags', envelope.flags)
 	},
-	flagEnvelope(state, {envelope, flag, value}) {
+	flagEnvelope(state, { envelope, flag, value }) {
 		envelope.flags[flag] = value
 	},
-	removeEnvelope(state, {accountId, folderId, id, query}) {
+	removeEnvelope(state, { accountId, folderId, id, query }) {
 		const folder = state.folders[normalizedFolderId(accountId, folderId)]
 		const list = folder.envelopeLists[normalizedEnvelopeListId(query)]
 		if (!list) {
@@ -179,14 +179,14 @@ export default {
 
 		Vue.delete(list, normalizedMessageId(accountId, folderId, id))
 	},
-	addMessage(state, {accountId, folderId, message}) {
+	addMessage(state, { accountId, folderId, message }) {
 		const uid = normalizedMessageId(accountId, folderId, message.id)
 		message.accountId = accountId
 		message.folderId = folderId
 		message.uid = uid
 		Vue.set(state.messages, uid, message)
 	},
-	updateDraft(state, {draft, data, newUid}) {
+	updateDraft(state, { draft, data, newUid }) {
 		// Update draft's UID
 		const oldUid = draft.uid
 		const uid = normalizedMessageId(draft.accountId, draft.folderId, newUid)
@@ -212,7 +212,7 @@ export default {
 		Vue.set(state.envelopes, uid, draft)
 		Vue.set(state.messages, uid, draft)
 	},
-	removeMessage(state, {accountId, folderId, id}) {
+	removeMessage(state, { accountId, folderId, id }) {
 		Vue.delete(state.messages, normalizedMessageId(accountId, folderId, id))
 	},
 }

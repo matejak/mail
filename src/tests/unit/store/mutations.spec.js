@@ -20,7 +20,7 @@
  */
 
 import mutations from '../../../store/mutations'
-import {UNIFIED_ACCOUNT_ID, UNIFIED_INBOX_UID} from '../../../store/constants'
+import { UNIFIED_ACCOUNT_ID, UNIFIED_INBOX_UID } from '../../../store/constants'
 
 describe('Vuex store mutations', () => {
 	it('adds envelopes', () => {

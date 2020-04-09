@@ -3,14 +3,12 @@
 		<div
 			v-if="folder.isUnified"
 			class="mail-message-account-color"
-			:style="{'background-color': accountColor}"
-		></div>
+			:style="{'background-color': accountColor}" />
 		<div
 			v-if="data.flags.flagged"
 			class="app-content-list-item-star icon-starred"
 			:data-starred="data.flags.flagged ? 'true' : 'false'"
-			@click.prevent="onToggleFlagged"
-		></div>
+			@click.prevent="onToggleFlagged" />
 		<div class="app-content-list-item-icon">
 			<Avatar :display-name="addresses" :email="avatarEmail" />
 		</div>
@@ -29,13 +27,19 @@
 			<Moment :timestamp="data.dateInt" />
 		</div>
 		<Actions class="app-content-list-item-menu" menu-align="right">
-			<ActionButton icon="icon-starred" @click.prevent="onToggleFlagged">{{
-				data.flags.flagged ? t('mail', 'Unfavorite') : t('mail', 'Favorite')
-			}}</ActionButton>
-			<ActionButton icon="icon-mail" @click.prevent="onToggleSeen">{{
-				data.flags.unseen ? t('mail', 'Mark read') : t('mail', 'Mark unread')
-			}}</ActionButton>
-			<ActionButton icon="icon-delete" @click.prevent="onDelete">{{ t('mail', 'Delete') }}</ActionButton>
+			<ActionButton icon="icon-starred" @click.prevent="onToggleFlagged">
+				{{
+					data.flags.flagged ? t('mail', 'Unfavorite') : t('mail', 'Favorite')
+				}}
+			</ActionButton>
+			<ActionButton icon="icon-mail" @click.prevent="onToggleSeen">
+				{{
+					data.flags.unseen ? t('mail', 'Mark read') : t('mail', 'Mark unread')
+				}}
+			</ActionButton>
+			<ActionButton icon="icon-delete" @click.prevent="onDelete">
+				{{ t('mail', 'Delete') }}
+			</ActionButton>
 		</Actions>
 	</router-link>
 </template>
@@ -46,7 +50,7 @@ import ActionButton from '@nextcloud/vue/dist/Components/ActionButton'
 import Moment from './Moment'
 
 import Avatar from './Avatar'
-import {calculateAccountColor} from '../util/AccountColor'
+import { calculateAccountColor } from '../util/AccountColor'
 
 export default {
 	name: 'Envelope',
@@ -105,7 +109,7 @@ export default {
 		addresses() {
 			// Show recipients' label/address in a sent folder
 			if (this.folder.specialRole === 'sent') {
-				let recipients = [this.data.to, this.data.cc].flat().map(function (recipient) {
+				const recipients = [this.data.to, this.data.cc].flat().map(function(recipient) {
 					return recipient.label ? recipient.label : recipient.email
 				})
 				return recipients.length > 0 ? recipients.join(', ') : t('mail', 'Blind copy recipients only')
@@ -116,7 +120,7 @@ export default {
 		avatarEmail() {
 			// Show first recipients' avatar in a sent folder (or undefined when sent to Bcc only)
 			if (this.folder.specialRole === 'sent') {
-				let recipients = [this.data.to, this.data.cc].flat().map(function (recipient) {
+				const recipients = [this.data.to, this.data.cc].flat().map(function(recipient) {
 					return recipient.email
 				})
 				return recipients.length > 0 ? recipients[0] : undefined

@@ -35,9 +35,9 @@ export default {
 
 		if (this.$route.name === 'home' && accounts.length > 1) {
 			// Show first account
-			let firstAccount = accounts[0]
+			const firstAccount = accounts[0]
 			// FIXME: this assumes that there's at least one folder
-			let firstFolder = this.$store.getters.getFolders(firstAccount.id)[0]
+			const firstFolder = this.$store.getters.getFolders(firstAccount.id)[0]
 
 			console.debug('loading first folder of first account', firstAccount.id, firstFolder.id)
 
@@ -60,9 +60,9 @@ export default {
 			}
 
 			// Show first account
-			let firstAccount = accounts[0]
+			const firstAccount = accounts[0]
 			// FIXME: this assumes that there's at least one folder
-			let firstFolder = this.$store.getters.getFolders(firstAccount.id)[0]
+			const firstFolder = this.$store.getters.getFolders(firstAccount.id)[0]
 
 			console.debug('loading composer with first account and folder', firstAccount.id, firstFolder.id)
 

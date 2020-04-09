@@ -22,10 +22,18 @@
 <template>
 	<div class="reservation">
 		<div class="event">
-			<div class="event-name">{{ eventName }}</div>
-			<div v-if="location" class="venue">{{ location }}</div>
-			<div v-if="date">{{ date }}</div>
-			<div v-if="time">{{ time }}</div>
+			<div class="event-name">
+				{{ eventName }}
+			</div>
+			<div v-if="location" class="venue">
+				{{ location }}
+			</div>
+			<div v-if="date">
+				{{ date }}
+			</div>
+			<div v-if="time">
+				{{ time }}
+			</div>
 		</div>
 		<CalendarImport v-if="canImport" :calendars="calendars" :handler="handleImport" />
 	</div>
@@ -37,12 +45,12 @@ import md5 from 'md5'
 import moment from '@nextcloud/moment'
 
 import CalendarImport from './CalendarImport'
-import {importCalendarEvent, importSingleCalendarEvent} from '../../service/DAVService'
+import { importCalendarEvent, importSingleCalendarEvent } from '../../service/DAVService'
 import logger from '../../logger'
 
 export default {
 	name: 'EventReservation',
-	components: {CalendarImport},
+	components: { CalendarImport },
 	props: {
 		data: {
 			type: Object,
@@ -123,14 +131,14 @@ export default {
 
 			const cal = new ical.Component('VCALENDAR')
 			cal.addSubcomponent(event)
-			logger.debug('generated calendar event from event reservation data', {ical: cal.toString()})
+			logger.debug('generated calendar event from event reservation data', { ical: cal.toString() })
 			return importCalendarEvent(calendar.url)(cal.toString())
 				.then(() => {
 					logger.debug('event successfully imported')
-					OCP.Toast.success(t('mail', 'Event imported into {calendar}', {calendar: calendar.displayname}))
+					OCP.Toast.success(t('mail', 'Event imported into {calendar}', { calendar: calendar.displayname }))
 				})
 				.catch((error) => {
-					logger.error('Could not import event', {error})
+					logger.error('Could not import event', { error })
 					OCP.Toast.error(t('mail', 'Could not create event'))
 				})
 		},

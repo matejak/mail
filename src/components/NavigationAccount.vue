@@ -27,8 +27,7 @@
 		:icon="iconError"
 		:menu-open.sync="menuOpen"
 		:title="account.emailAddress"
-		:to="settingsRoute"
-	>
+		:to="settingsRoute">
 		<!-- Color dot -->
 		<AppNavigationIconBullet v-if="bulletColor" slot="icon" :color="bulletColor" />
 
@@ -59,9 +58,9 @@ import AppNavigationIconBullet from '@nextcloud/vue/dist/Components/AppNavigatio
 import ActionRouter from '@nextcloud/vue/dist/Components/ActionRouter'
 import ActionButton from '@nextcloud/vue/dist/Components/ActionButton'
 import ActionInput from '@nextcloud/vue/dist/Components/ActionInput'
-import {generateUrl} from '@nextcloud/router'
+import { generateUrl } from '@nextcloud/router'
 
-import {calculateAccountColor} from '../util/AccountColor'
+import { calculateAccountColor } from '../util/AccountColor'
 import logger from '../logger'
 
 export default {
@@ -120,10 +119,10 @@ export default {
 			logger.info('creating folder ' + name)
 			this.menuOpen = false
 			this.$store
-				.dispatch('createFolder', {account: this.account, name})
+				.dispatch('createFolder', { account: this.account, name })
 				.then(() => logger.info(`folder ${name} created`))
 				.catch((error) => {
-					logger.error('could not create folder', {error})
+					logger.error('could not create folder', { error })
 					throw error
 				})
 		},
@@ -138,17 +137,17 @@ export default {
 					// TODO: update store and handle this more efficiently
 					location.href = generateUrl('/apps/mail')
 				})
-				.catch((error) => logger.error('could not delete account', {error}))
+				.catch((error) => logger.error('could not delete account', { error }))
 		},
 		changeAccountOrderUp() {
 			this.$store
-				.dispatch('moveAccount', {account: this.account, up: true})
-				.catch((error) => logger.error('could not move account up', {error}))
+				.dispatch('moveAccount', { account: this.account, up: true })
+				.catch((error) => logger.error('could not move account up', { error }))
 		},
 		changeAccountOrderDown() {
 			this.$store
-				.dispatch('moveAccount', {account: this.account})
-				.catch((error) => logger.error('could not move account down', {error}))
+				.dispatch('moveAccount', { account: this.account })
+				.catch((error) => logger.error('could not move account down', { error }))
 		},
 	},
 }

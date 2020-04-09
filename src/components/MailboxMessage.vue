@@ -8,9 +8,11 @@
 				:show-details="showMessage"
 				:infinite-scroll-disabled="false"
 				:infinite-scroll-distance="10"
-				@shortkey.native="onShortcut"
-			>
-				<Mailbox :account="account" :folder="folder" :search-query="query" :bus="bus" />
+				@shortkey.native="onShortcut">
+				<Mailbox :account="account"
+					:folder="folder"
+					:search-query="query"
+					:bus="bus" />
 			</AppContentList>
 			<NewMessageDetail v-if="newMessage" />
 			<Message v-else-if="showMessage" @delete="deleteMessage" />
@@ -31,7 +33,7 @@ import Mailbox from './Mailbox'
 import Message from './Message'
 import NewMessageDetail from './NewMessageDetail'
 import NoMessageSelected from './NoMessageSelected'
-import {normalizedEnvelopeListId} from '../store/normalization'
+import { normalizedEnvelopeListId } from '../store/normalization'
 
 export default {
 	name: 'MailboxMessage',
@@ -99,9 +101,9 @@ export default {
 		},
 		newMessage() {
 			return (
-				this.$route.params.messageUid === 'new' ||
-				this.$route.params.messageUid === 'reply' ||
-				this.$route.params.messageUid === 'replyAll'
+				this.$route.params.messageUid === 'new'
+				|| this.$route.params.messageUid === 'reply'
+				|| this.$route.params.messageUid === 'replyAll'
 			)
 		},
 	},

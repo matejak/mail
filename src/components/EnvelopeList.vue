@@ -1,14 +1,16 @@
 <template>
 	<div>
 		<transition-group name="list">
-			<div id="list-refreshing" key="loading" class="icon-loading-small" :class="{refreshing: refreshing}" />
+			<div id="list-refreshing"
+				key="loading"
+				class="icon-loading-small"
+				:class="{refreshing: refreshing}" />
 			<Envelope
 				v-for="env in envelopes"
 				:key="env.uid"
 				:data="env"
 				:folder="folder"
-				@delete="$emit('delete', env.uid)"
-			/>
+				@delete="$emit('delete', env.uid)" />
 			<div id="load-more-mail-messages" key="loadingMore" :class="{'icon-loading-small': loadingMore}" />
 		</transition-group>
 	</div>

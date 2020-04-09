@@ -5,13 +5,13 @@
 			v-else-if="!message"
 			:error="error && error.message ? error.message : t('mail', 'Not found')"
 			:message="errorMessage"
-			:data="error"
-		>
-		</Error>
+			:data="error" />
 		<template v-else>
 			<div id="mail-message-header">
 				<div id="mail-message-header-fields">
-					<h2 :title="message.subject">{{ message.subject }}</h2>
+					<h2 :title="message.subject">
+						{{ message.subject }}
+					</h2>
 					<p class="transparency">
 						<AddressList :entries="message.from" />
 						{{ t('mail', 'to') }}
@@ -28,8 +28,7 @@
 								? 'icon-reply-all-white button primary'
 								: 'icon-reply-white button primary'
 						"
-						@click="hasMultipleRecipients ? replyAll() : replyMessage()"
-					>
+						@click="hasMultipleRecipients ? replyAll() : replyMessage()">
 						<span class="action-label">{{ t('mail', 'Reply') }}</span>
 					</div>
 					<Actions id="mail-message-actions-menu" class="app-content-list-item-menu" menu-align="right">
@@ -45,8 +44,7 @@
 						<ActionButton
 							:icon="sourceLoading ? 'icon-loading-small' : 'icon-details'"
 							:disabled="sourceLoading"
-							@click="onShowSource"
-						>
+							@click="onShowSource">
 							{{ t('mail', 'View source') }}
 						</ActionButton>
 						<ActionButton icon="icon-delete" @click.prevent="onDelete">
@@ -69,11 +67,13 @@
 				<MessagePlainTextBody v-else :body="message.body" :signature="message.signature" />
 				<Popover v-if="message.attachments[0]" class="attachment-popover">
 					<Actions slot="trigger">
-						<ActionButton icon="icon-public icon-attachment">Attachments</ActionButton>
+						<ActionButton icon="icon-public icon-attachment">
+							Attachments
+						</ActionButton>
 					</Actions>
 					<MessageAttachments :attachments="message.attachments" />
 				</Popover>
-				<div id="reply-composer"></div>
+				<div id="reply-composer" />
 			</div>
 		</template>
 	</AppContentDetails>
@@ -86,12 +86,12 @@ import Popover from '@nextcloud/vue/dist/Components/Popover'
 import AppContentDetails from '@nextcloud/vue/dist/Components/AppContentDetails'
 import axios from '@nextcloud/axios'
 import Modal from '@nextcloud/vue/dist/Components/Modal'
-import {generateUrl} from '@nextcloud/router'
+import { generateUrl } from '@nextcloud/router'
 
 import AddressList from './AddressList'
-import {buildRecipients as buildReplyRecipients, buildReplySubject} from '../ReplyBuilder'
+import { buildRecipients as buildReplyRecipients, buildReplySubject } from '../ReplyBuilder'
 import Error from './Error'
-import {getRandomMessageErrorMessage} from '../util/ErrorMessageFactory'
+import { getRandomMessageErrorMessage } from '../util/ErrorMessageFactory'
 import Itinerary from './Itinerary'
 import MessageHTMLBody from './MessageHTMLBody'
 import MessagePlainTextBody from './MessagePlainTextBody'
@@ -172,7 +172,7 @@ export default {
 					this.$store.dispatch('fetchEnvelope', messageUid),
 					this.$store.dispatch('fetchMessage', messageUid),
 				])
-				logger.debug('envelope and message fetched', {envelope, message})
+				logger.debug('envelope and message fetched', { envelope, message })
 				// TODO: add timeout so that message isn't flagged when only viewed
 				// for a few seconds
 				if (message && message.uid !== this.$route.params.messageUid) {
@@ -184,7 +184,7 @@ export default {
 				this.message = message
 
 				if (envelope === undefined || message === undefined) {
-					logger.info('message could not be found', {messageUid, envelope, message})
+					logger.info('message could not be found', { messageUid, envelope, message })
 					this.errorMessage = getRandomMessageErrorMessage()
 					this.loading = false
 					return
@@ -204,7 +204,7 @@ export default {
 					return this.$store.dispatch('toggleEnvelopeSeen', envelope)
 				}
 			} catch (error) {
-				logger.error('could not load message ', {messageUid, error})
+				logger.error('could not load message ', { messageUid, error })
 				if (error.isError) {
 					this.errorMessage = t('mail', 'Could not load your message')
 					this.error = error
