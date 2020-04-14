@@ -38,7 +38,7 @@
 			/>
 			<div
 				v-if="collapsible && envelopes.length > collapseThreshold"
-				:key="'list-collapse-' + this.searchQuery"
+				:key="'list-collapse-' + searchQuery"
 				class="collapse-expand"
 				@click="$emit('update:collapsed', !collapsed)"
 			>
@@ -103,6 +103,7 @@ export default {
 	},
 	data() {
 		return {
+			selection: [],
 			collapseThreshold: 5,
 		}
 	},
@@ -113,13 +114,6 @@ export default {
 			}
 			return this.envelopes
 		},
-	},
-	data() {
-		return {
-			selection: [],
-		}
-	},
-	computed: {
 		selectMode() {
 			// returns true when in selection mode (where the user selects several emails at once)
 			return this.selection.length > 0
@@ -273,7 +267,7 @@ div {
 .multiselect-header-leave-active,
 .list-enter-active,
 .list-leave-active {
-	transition: all var(--animation-quick);
+	transition: all var(--animation-slow);
 }
 
 .multiselect-header-enter,

@@ -1,9 +1,5 @@
 <template>
-	<router-link
-		class="app-content-list-item"
-		:class="{seen: data.flags.seen, draft, selected: selected}"
-		:to="link"
-	>
+	<router-link class="app-content-list-item" :class="{seen: data.flags.seen, draft, selected: selected}" :to="link">
 		<div
 			v-if="folder.isUnified"
 			class="mail-message-account-color"
@@ -252,7 +248,6 @@ export default {
 
 .app-content-list-item.selected {
 	background-color: var(--color-background-dark);
-}
 	font-weight: bold;
 }
 .app-content-list-item-star.junk {
