@@ -33,7 +33,6 @@ use OCA\Mail\Exception\UidValidityChangedException;
 use OCA\Mail\IMAP\MessageMapper;
 use function array_chunk;
 use function array_merge;
-use function array_reduce;
 
 class Synchronizer {
 	private const UID_CHUNK_SIZE = 15000;
@@ -113,7 +112,9 @@ class Synchronizer {
 	 * @return array
 	 */
 	private function getChangedMessageUids(Horde_Imap_Client_Base $imapClient, Horde_Imap_Client_Mailbox $mailbox, Request $request): array {
-		$changedUids = array_merge(...array_map(
+		$changedUids = array_merge(
+			[], // for php<7.4 https://www.php.net/manual/en/function.array-merge.php
+			...array_map(
 				function (array $uids) use ($imapClient, $mailbox, $request) {
 					return $imapClient->sync($mailbox, $request->getToken(), [
 						'criteria' => Horde_Imap_Client::SYNC_FLAGSUIDS,
@@ -134,7 +135,9 @@ class Synchronizer {
 	 * @return array
 	 */
 	private function getVanishedMessageUids(Horde_Imap_Client_Base $imapClient, Horde_Imap_Client_Mailbox $mailbox, Request $request): array {
-		$vanishedUids = array_merge(...array_map(
+		$vanishedUids = array_merge(
+			[], // for php<7.4 https://www.php.net/manual/en/function.array-merge.php
+			...array_map(
 				function (array $uids) use ($imapClient, $mailbox, $request) {
 					return $imapClient->sync($mailbox, $request->getToken(), [
 						'criteria' => Horde_Imap_Client::SYNC_VANISHEDUIDS,
