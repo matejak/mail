@@ -3,20 +3,18 @@
 		<transition-group name="list">
 			<div id="list-refreshing" key="loading" class="icon-loading-small" :class="{refreshing: refreshing}" />
 			<Envelope
-				v-for="env in envelopesToShow"
+				v-for="env in envelopes"
 				:key="env.uid"
 				:data="env"
 				:folder="folder"
 				@delete="$emit('delete', env.uid)"
 			/>
 			<div
-				v-if="collapsible && envelopes.length > collapseThreshold"
 				:key="'list-collapse-' + this.searchQuery"
 				class="collapse-expand"
-				@click="$emit('update:collapsed', !collapsed)"
+				@click="$emit('loadMore')"
 			>
-				<template v-if="collapsed">{{ t('mail', 'Show all {nr} messages', {nr: envelopes.length}) }}</template>
-				<template v-else>{{ t('mail', 'Collapse messages') }}</template>
+				{{ t('mail', 'Load more') }}
 			</div>
 			<div id="load-more-mail-messages" key="loadingMore" :class="{'icon-loading-small': loadingMore}" />
 		</transition-group>
@@ -57,28 +55,10 @@ export default {
 			type: Boolean,
 			required: true,
 		},
-		collapsible: {
+		loadMoreButton: {
 			type: Boolean,
 			required: false,
 			default: false,
-		},
-		collapsed: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
-	data() {
-		return {
-			collapseThreshold: 5,
-		}
-	},
-	computed: {
-		envelopesToShow() {
-			if (this.collapsible && this.collapsed) {
-				return this.envelopes.slice(0, this.collapseThreshold)
-			}
-			return this.envelopes
 		},
 	},
 }

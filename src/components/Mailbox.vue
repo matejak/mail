@@ -37,9 +37,9 @@
 		:envelopes="envelopes"
 		:refreshing="refreshing"
 		:loading-more="loadingMore"
-		:collapsible="collapsible"
-		:collapsed.sync="collapsed"
+		:load-more-button="paginate === 'manual'"
 		@delete="onDelete"
+		@loadMore="loadMore"
 	/>
 </template>
 
@@ -82,8 +82,8 @@ export default {
 			required: true,
 		},
 		paginate: {
-			type: Boolean,
-			default: true,
+			type: String,
+			default: 'manual',
 		},
 		openFirst: {
 			type: Boolean,
@@ -99,15 +99,9 @@ export default {
 			required: false,
 			default: false,
 		},
-		collapsible: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
 	},
 	data() {
 		return {
-			collapsed: this.collapsible, // collapse by default
 			error: false,
 			refreshing: false,
 			loadingMore: false,
@@ -136,7 +130,7 @@ export default {
 		},
 	},
 	created() {
-		this.bus.$on('loadMore', this.loadMore)
+		this.bus.$on('loadMore', this.onScroll)
 		this.bus.$on('delete', this.onDelete)
 		this.bus.$on('shortcut', this.handleShortcut)
 		this.loadMailboxInterval = setInterval(this.loadMailbox, 60000)
@@ -145,7 +139,7 @@ export default {
 		return await this.loadEnvelopes()
 	},
 	destroyed() {
-		this.bus.$off('loadMore', this.loadMore)
+		this.bus.$off('loadMore', this.onScroll)
 		this.bus.$off('delete', this.onDelete)
 		this.bus.$off('shortcut', this.handleShortcut)
 		this.stopInterval()
@@ -179,7 +173,6 @@ export default {
 					accountId: this.account.id,
 					folderId: this.folder.id,
 					query: this.searchQuery,
-					paginate: this.paginate,
 				})
 
 				logger.debug(envelopes.length + ' envelopes fetched', {envelopes})
@@ -394,6 +387,14 @@ export default {
 					messageUid: next.uid,
 				},
 			})
+		},
+		onScroll() {
+			if (this.paginate !== 'scroll') {
+				logger.debug('ignoring scroll pagination')
+				return
+			}
+
+			this.loadMore()
 		},
 		async loadMailbox() {
 			// When the account is unified or inbox, return nothing, else sync the mailbox

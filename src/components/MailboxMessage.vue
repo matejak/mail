@@ -24,7 +24,6 @@
 						class="nameimportant"
 						:account="unifiedAccount"
 						:folder="unifiedInbox"
-						:paginate="false"
 						:search-query="appendToSearch('is:important not:starred')"
 						:is-priority-inbox="true"
 						:collapsible="true"
@@ -35,10 +34,8 @@
 						class="namestarred"
 						:account="unifiedAccount"
 						:folder="unifiedInbox"
-						:paginate="false"
 						:search-query="appendToSearch('is:starred not:important')"
 						:is-priority-inbox="true"
-						:collapsible="true"
 						:bus="bus"
 					/>
 					<SectionTitle class="app-content-list-item other" :name="t('mail', 'Other')" />
@@ -47,6 +44,7 @@
 						:account="unifiedAccount"
 						:folder="unifiedInbox"
 						:open-first="false"
+						:paginate="scoll"
 						:search-query="appendToSearch('not:starred not:important')"
 						:is-priority-inbox="true"
 						:bus="bus"
@@ -181,7 +179,7 @@ export default {
 		onScroll(event) {
 			logger.debug('scroll', {event})
 
-			this.bus.$emit('loadMore')
+			this.bus.$emit('scroll')
 		},
 		onShortcut(e) {
 			this.bus.$emit('shortcut', e)

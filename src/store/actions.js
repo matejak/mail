@@ -220,7 +220,7 @@ export default {
 			return getters.getEnvelope(accountId, folderId, id)
 		})
 	},
-	fetchEnvelopes({state, commit, getters, dispatch}, {accountId, folderId, query, paginate = true}) {
+	fetchEnvelopes({state, commit, getters, dispatch}, {accountId, folderId, query}) {
 		const folder = getters.getFolder(accountId, folderId)
 
 		if (folder.isUnified) {
@@ -230,17 +230,16 @@ export default {
 						accountId: f.accountId,
 						folderId: f.id,
 						query,
-						paginate,
 					})
 				),
 				Promise.all.bind(Promise),
-				andThen(paginate ? map(sliceToPage) : identity)
+				andThen(map(sliceToPage))
 			)
 			const fetchUnifiedEnvelopes = pipe(
 				findIndividualFolders(getters.getFolders, folder.specialRole),
 				fetchIndividualLists,
 				andThen(combineEnvelopeLists),
-				andThen(paginate ? sliceToPage : identity),
+				andThen(sliceToPage),
 				andThen(
 					tap(
 						map((envelope) =>
@@ -272,7 +271,7 @@ export default {
 					)
 				)
 			)
-		)(accountId, folderId, query, undefined, paginate ? 20 : undefined)
+		)(accountId, folderId, query, undefined, 20)
 	},
 	fetchNextEnvelopePage({commit, getters, dispatch}, {accountId, folderId, query, rec = true}) {
 		const folder = getters.getFolder(accountId, folderId)
