@@ -10,8 +10,9 @@
 				@delete="$emit('delete', env.uid)"
 			/>
 			<div
+				v-if="loadMoreButton"
 				:key="'list-collapse-' + this.searchQuery"
-				class="collapse-expand"
+				class="load-more"
 				@click="$emit('loadMore')"
 			>
 				{{ t('mail', 'Load more') }}
@@ -70,7 +71,7 @@ div {
 	position: relative;
 }
 
-.collapse-expand {
+.load-more {
 	text-align: center;
 	margin-top: 10px;
 	cursor: pointer;

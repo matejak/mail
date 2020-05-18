@@ -37,7 +37,7 @@
 		:envelopes="envelopes"
 		:refreshing="refreshing"
 		:loading-more="loadingMore"
-		:load-more-button="paginate === 'manual'"
+		:load-more-button="showLoadMore"
 		@delete="onDelete"
 		@loadMore="loadMore"
 	/>
@@ -108,6 +108,7 @@ export default {
 			loadingEnvelopes: true,
 			loadingCacheInitialization: false,
 			loadMailboxInterval: undefined,
+			endReached: false,
 		}
 	},
 	computed: {
@@ -117,6 +118,9 @@ export default {
 		hasMessages() {
 			return this.envelopes.length > 0
 		},
+		showLoadMore() {
+			return !this.endReached && this.paginate === 'manual'
+		}
 	},
 	watch: {
 		account() {
@@ -228,12 +232,16 @@ export default {
 			this.loadingMore = true
 
 			try {
-				await this.$store.dispatch('fetchNextEnvelopePage', {
+				const envelopes = await this.$store.dispatch('fetchNextEnvelopePage', {
 					accountId: this.account.accountId,
 					folderId: this.folder.id,
 					envelopes: this.envelopes,
 					query: this.searchQuery,
 				})
+				if (envelopes.length === 0) {
+					logger.info('envelope list end reached')
+					this.endReached = true
+				}
 			} catch (error) {
 				logger.error('could not fetch next envelope page', {error})
 			} finally {
